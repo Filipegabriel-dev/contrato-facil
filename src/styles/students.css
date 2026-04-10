@@ -1,0 +1,242 @@
+/* ============================================
+   STUDENTS PAGE STYLES
+   ============================================ */
+
+.students-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+.students-header-left h1 {
+  margin-bottom: var(--space-1);
+}
+
+.students-header-left p {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+}
+
+/* Activity rate */
+.active-rate-card {
+  padding: var(--space-4) var(--space-5) !important;
+}
+
+.active-rate-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.active-rate-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--gray-100);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.active-rate-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10B981 0%, #059669 100%);
+  border-radius: var(--radius-full);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Search & Toolbar */
+.students-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  flex: 1;
+  max-width: 420px;
+  transition: all var(--transition-fast);
+}
+
+.search-box:focus-within {
+  border-color: var(--blue-400);
+  box-shadow: 0 0 0 3px rgba(43, 94, 167, 0.12);
+}
+
+.search-box .material-icons-round {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  flex: 1;
+  padding: var(--space-2) 0;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.status-filters {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Data Table */
+.students-table {
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table thead {
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.data-table th {
+  padding: var(--space-4) var(--space-5);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+.data-table td {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--gray-100);
+  font-size: 0.875rem;
+  vertical-align: middle;
+}
+
+.data-table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.data-table tbody tr:hover {
+  background: var(--gray-50);
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Student info cell */
+.student-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.student-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.student-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  display: block;
+  line-height: 1.2;
+}
+
+.student-email {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 2px;
+}
+
+/* Status toggle */
+.status-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: none;
+  background: none;
+}
+
+.status-toggle.active {
+  color: #059669;
+}
+
+.status-toggle.active .material-icons-round {
+  font-size: 1.5rem;
+  color: #10B981;
+}
+
+.status-toggle.inactive {
+  color: var(--red-600);
+}
+
+.status-toggle.inactive .material-icons-round {
+  font-size: 1.5rem;
+  color: var(--gray-400);
+}
+
+.status-toggle:hover {
+  background: var(--gray-100);
+}
+
+/* Row actions */
+.row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-1);
+  opacity: 1;
+}
+
+/* Renew button always visible */
+.renew-student-btn {
+  opacity: 1 !important;
+}
+
+/* Renewal Modal */
+.renewal-student-card {
+  padding: var(--space-4) var(--space-5);
+  background: linear-gradient(135deg, var(--blue-50) 0%, var(--orange-50) 100%);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--blue-100);
+  margin-bottom: var(--space-5);
+}
+
+.renewal-student-card .student-name {
+  font-size: 1.0625rem;
+}
