@@ -1,5 +1,5 @@
 /* ============================================
-   STUDENTS PAGE STYLES
+   STUDENTS PAGE STYLES — TeacherFlow
    ============================================ */
 
 .students-header {
@@ -7,7 +7,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-6);
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--space-6);
 }
 
 .students-header-left h1 {
@@ -33,15 +33,15 @@
 
 .active-rate-bar {
   width: 100%;
-  height: 8px;
-  background: var(--gray-100);
+  height: 7px;
+  background: var(--slate-100);
   border-radius: var(--radius-full);
   overflow: hidden;
 }
 
 .active-rate-fill {
   height: 100%;
-  background: linear-gradient(90deg, #10B981 0%, #059669 100%);
+  background: linear-gradient(90deg, var(--blue-600) 0%, var(--blue-400) 100%);
   border-radius: var(--radius-full);
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -52,7 +52,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-5);
   flex-wrap: wrap;
 }
 
@@ -62,7 +62,7 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
   background: var(--white);
-  border: 1.5px solid var(--gray-200);
+  border: 1.5px solid var(--slate-200);
   border-radius: var(--radius-md);
   flex: 1;
   max-width: 420px;
@@ -70,12 +70,12 @@
 }
 
 .search-box:focus-within {
-  border-color: var(--blue-400);
-  box-shadow: 0 0 0 3px rgba(43, 94, 167, 0.12);
+  border-color: var(--blue-500);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
 .search-box .material-icons-round {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   color: var(--text-muted);
 }
 
@@ -110,8 +110,8 @@
 }
 
 .data-table thead {
-  background: var(--gray-50);
-  border-bottom: 1px solid var(--gray-200);
+  background: var(--slate-50);
+  border-bottom: 1px solid var(--slate-200);
 }
 
 .data-table th {
@@ -126,7 +126,7 @@
 
 .data-table td {
   padding: var(--space-4) var(--space-5);
-  border-bottom: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--slate-100);
   font-size: 0.875rem;
   vertical-align: middle;
 }
@@ -136,7 +136,7 @@
 }
 
 .data-table tbody tr:hover {
-  background: var(--gray-50);
+  background: var(--slate-50);
 }
 
 .data-table tbody tr:last-child td {
@@ -151,16 +151,17 @@
 }
 
 .student-avatar {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   flex-shrink: 0;
+  background: var(--blue-800);
 }
 
 .student-name {
@@ -193,12 +194,12 @@
 }
 
 .status-toggle.active {
-  color: #059669;
+  color: var(--green-600);
 }
 
 .status-toggle.active .material-icons-round {
   font-size: 1.5rem;
-  color: #10B981;
+  color: var(--green-500);
 }
 
 .status-toggle.inactive {
@@ -207,11 +208,11 @@
 
 .status-toggle.inactive .material-icons-round {
   font-size: 1.5rem;
-  color: var(--gray-400);
+  color: var(--slate-300);
 }
 
 .status-toggle:hover {
-  background: var(--gray-100);
+  background: var(--slate-100);
 }
 
 /* Row actions */
@@ -231,12 +232,42 @@
 /* Renewal Modal */
 .renewal-student-card {
   padding: var(--space-4) var(--space-5);
-  background: linear-gradient(135deg, var(--blue-50) 0%, var(--orange-50) 100%);
+  background: var(--blue-50);
   border-radius: var(--radius-md);
   border: 1px solid var(--blue-100);
   margin-bottom: var(--space-5);
 }
 
 .renewal-student-card .student-name {
-  font-size: 1.0625rem;
+}
+
+/* ============================================
+   RESPONSIVE STUDENTS
+   ============================================ */
+
+/* Tablet / Mobile */
+@media (max-width: 768px) {
+  .students-header {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  
+  .students-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-box {
+    max-width: 100%;
+  }
+  
+  /* Make table horizontally scrollable */
+  .students-table {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .data-table {
+    min-width: 600px;
+  }
 }

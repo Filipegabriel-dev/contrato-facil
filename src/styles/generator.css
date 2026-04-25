@@ -1,13 +1,13 @@
 /* ============================================
-   GENERATOR PAGE STYLES
+   GENERATOR PAGE STYLES — TeacherFlow
    ============================================ */
 
 /* Final Preview Results */
 .final-preview-section {
-  background: var(--gray-50);
+  background: var(--slate-50);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--slate-200);
 }
 
 .final-document-preview {
@@ -20,11 +20,11 @@
   font-size: 0.875rem;
   line-height: 1.6;
   color: var(--text-primary);
-  border: 1px solid var(--gray-100);
+  border: 1px solid var(--slate-100);
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
 }
 
-.final-document-preview h1, 
+.final-document-preview h1,
 .final-document-preview h2 {
   font-size: 1.1rem;
   margin-bottom: var(--space-4);
@@ -42,7 +42,7 @@
 .success-icon {
   width: 64px;
   height: 64px;
-  background: var(--success-100);
+  background: var(--green-50);
   color: var(--success);
   border-radius: 50%;
   display: flex;
@@ -59,7 +59,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-6);
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--space-6);
 }
 
 .generator-header-left h1 {
@@ -76,11 +76,12 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  margin-bottom: var(--space-8);
-  padding: var(--space-4) var(--space-6);
+  margin-bottom: var(--space-6);
+  padding: var(--space-4) var(--space-5);
   background: var(--white);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
+  border: 1px solid var(--slate-200);
 }
 
 .step-item {
@@ -98,28 +99,28 @@
 }
 
 .step-item.completed {
-  opacity: 0.6;
+  opacity: 0.55;
 }
 
 .step-number {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.8125rem;
   font-weight: 700;
-  background: var(--gray-100);
+  background: var(--slate-100);
   color: var(--text-secondary);
   flex-shrink: 0;
   transition: all var(--transition-base);
 }
 
 .step-item.active .step-number {
-  background: linear-gradient(135deg, var(--blue-500) 0%, var(--blue-600) 100%);
+  background: var(--blue-800);
   color: white;
-  box-shadow: var(--shadow-glow-blue);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.15);
 }
 
 .step-item.completed .step-number {
@@ -144,9 +145,9 @@
 }
 
 .step-divider {
-  width: 40px;
-  height: 2px;
-  background: var(--gray-200);
+  width: 36px;
+  height: 1.5px;
+  background: var(--slate-200);
   flex-shrink: 0;
 }
 
@@ -164,7 +165,7 @@
 
 .template-option {
   background: var(--white);
-  border: 2px solid var(--gray-200);
+  border: 1.5px solid var(--slate-200);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   cursor: pointer;
@@ -177,15 +178,15 @@
 }
 
 .template-option:hover {
-  border-color: var(--blue-300);
+  border-color: var(--blue-400);
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
 .template-option.selected {
-  border-color: var(--blue-500);
+  border-color: var(--blue-600);
   background: var(--blue-50);
-  box-shadow: var(--shadow-md), 0 0 0 3px rgba(43, 94, 167, 0.12);
+  box-shadow: var(--shadow-md), 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
 .template-option-header {
@@ -227,10 +228,10 @@
   position: absolute;
   top: var(--space-3);
   right: var(--space-3);
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: var(--blue-500);
+  background: var(--blue-600);
   color: white;
   display: flex;
   align-items: center;
@@ -273,8 +274,8 @@
 }
 
 .input-card-header .material-icons-round {
-  font-size: 1.25rem;
-  color: var(--blue-500);
+  font-size: 1.125rem;
+  color: var(--blue-600);
 }
 
 .input-card-header h3 {
@@ -293,9 +294,9 @@
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  background: var(--gray-50);
+  background: var(--slate-50);
   border-radius: var(--radius-sm);
-  border-left: 3px solid var(--blue-400);
+  border-left: 3px solid var(--blue-500);
   animation: slideUp 0.3s ease-out both;
 }
 
@@ -317,7 +318,7 @@
 
 .field-row-edit {
   padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--gray-200);
+  border: 1.5px solid var(--slate-200);
   border-radius: var(--radius-sm);
   font-size: 0.8125rem;
   background: var(--white);
@@ -327,8 +328,8 @@
 }
 
 .field-row-edit:focus {
-  border-color: var(--blue-400);
-  box-shadow: 0 0 0 2px rgba(43, 94, 167, 0.1);
+  border-color: var(--blue-500);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
 }
 
 /* Plan selector */
@@ -341,7 +342,7 @@
 
 .plan-option {
   padding: var(--space-3) var(--space-4);
-  border: 2px solid var(--gray-200);
+  border: 1.5px solid var(--slate-200);
   border-radius: var(--radius-md);
   text-align: center;
   cursor: pointer;
@@ -349,27 +350,29 @@
   font-weight: 600;
   font-size: 0.875rem;
   background: var(--white);
+  color: var(--text-secondary);
 }
 
 .plan-option:hover {
-  border-color: var(--orange-300);
-  background: var(--orange-50);
+  border-color: var(--blue-400);
+  background: var(--blue-50);
+  color: var(--blue-700);
 }
 
 .plan-option.selected {
-  border-color: var(--orange-500);
-  background: linear-gradient(135deg, var(--orange-500) 0%, var(--orange-600) 100%);
+  border-color: var(--blue-700);
+  background: var(--blue-800);
   color: white;
-  box-shadow: var(--shadow-glow-orange);
+  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.2);
 }
 
 /* Preview panel */
 .preview-panel {
   background: var(--white);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   padding: var(--space-6);
   box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(0,0,0,0.04);
+  border: 1px solid var(--slate-200);
 }
 
 .preview-panel .contract-preview {
@@ -381,11 +384,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-6);
+  padding: var(--space-5) var(--space-6);
   background: var(--white);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(0,0,0,0.04);
+  border: 1px solid var(--slate-200);
 }
 
 .generate-info {
@@ -415,8 +418,8 @@
 }
 
 .no-template-state .material-icons-round {
-  font-size: 4rem;
-  color: var(--gray-300);
+  font-size: 3.5rem;
+  color: var(--slate-300);
   margin-bottom: var(--space-4);
 }
 
@@ -452,14 +455,75 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+  background: linear-gradient(135deg, var(--success) 0%, #15803D 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35);
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
 }
 
 .success-icon .material-icons-round {
   font-size: 2.5rem;
   color: white;
+}
+
+/* ============================================
+   RESPONSIVE GENERATOR
+   ============================================ */
+
+/* Tablet (<= 1024px) */
+@media (max-width: 1024px) {
+  .generator-input-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile (<= 768px) */
+@media (max-width: 768px) {
+  .generator-header {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  
+  .generator-steps {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-4);
+  }
+  
+  .step-item {
+    width: 100%;
+  }
+  
+  .step-divider {
+    width: 2px;
+    height: 16px;
+    margin-left: 28px;
+  }
+  
+  .plan-selector {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Small Mobile (<= 480px) */
+@media (max-width: 480px) {
+  .plan-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .generate-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+    text-align: center;
+  }
+  
+  .generate-btn-group {
+    flex-direction: column;
+  }
+  
+  .generate-btn-group .btn {
+    width: 100%;
+  }
 }

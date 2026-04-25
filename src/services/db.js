@@ -1,64 +1,71 @@
-import Dexie from 'dexie';
+import { supabase } from './supabase.js';
+import { getCurrentUser } from './auth.js';
 
-const db = new Dexie('ContractGenDB');
-
-db.version(1).stores({
-  contracts: '++id, name, category, createdAt'
-});
-
-db.version(2).stores({
-  contracts: '++id, name, category, createdAt',
-  students: '++id, name, cpf, plan, active, createdAt'
-});
-
-db.version(4).stores({
-  contracts: '++id, name, category, createdAt',
-  students: '++id, name, cpf, plan, active, createdAt',
-  studentDocs: '++id, studentId',
-  generationHistory: '++id, filename, studentName, templateName, createdAt'
-});
+// ============================================
+// HELPER: GET CURRENT USER ID
+// ============================================
+async function getUserId() {
+  const user = await getCurrentUser();
+  if (!user) throw new Error('Usuário não autenticado.');
+  return user.id;
+}
 
 // ============================================
 // STUDENT FUNCTIONS
 // ============================================
 
-/**
- * Save a new student
- */
 export async function saveStudent(student) {
-  return await db.students.add({
-    ...student,
-    active: student.active !== undefined ? student.active : true,
-    createdAt: new Date().toISOString()
-  });
+  const userId = await getUserId();
+  const { data, error } = await supabase
+    .from('students')
+    .insert([{ 
+      user_id: userId,
+      name: student.name,
+      cpf: student.cpf || null,
+      plan: student.plan || null,
+      active: student.active !== undefined ? student.active : true
+    }])
+    .select()
+    .single();
+    
+  if (error) throw error;
+  return data;
 }
 
-/**
- * Get all students
- */
 export async function getStudents() {
-  return await db.students.reverse().sortBy('createdAt');
+  const { data, error } = await supabase
+    .from('students')
+    .select('*')
+    .order('created_at', { ascending: false });
+    
+  if (error) throw error;
+  return data || [];
 }
 
-/**
- * Update a student
- */
 export async function updateStudent(id, updates) {
-  return await db.students.update(id, updates);
+  const { data, error } = await supabase
+    .from('students')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+    
+  if (error) throw error;
+  return data;
 }
 
-/**
- * Delete a student
- */
 export async function deleteStudent(id) {
-  return await db.students.delete(id);
+  const { error } = await supabase
+    .from('students')
+    .delete()
+    .eq('id', id);
+    
+  if (error) throw error;
+  return true;
 }
 
-/**
- * Get student stats: total, active, inactive
- */
 export async function getStudentStats() {
-  const all = await db.students.toArray();
+  const all = await getStudents();
   const active = all.filter(s => s.active).length;
   return {
     total: all.length,
@@ -72,84 +79,143 @@ export async function getStudentStats() {
 // ============================================
 
 export async function saveStudentDoc(studentId, file) {
-  return await db.studentDocs.add({
-    studentId,
-    fileName: file.name,
-    fileType: file.type,
-    fileSize: file.size,
-    fileData: file,
-    uploadedAt: new Date().toISOString()
-  });
+  const userId = await getUserId();
+  const filePath = `${userId}/students/${studentId}/${Date.now()}_${file.name}`;
+  
+  const { error: uploadError } = await supabase.storage
+    .from('contract-files')
+    .upload(filePath, file);
+    
+  if (uploadError) throw uploadError;
+  return { filePath };
 }
 
 export async function getStudentDocs(studentId) {
-  return await db.studentDocs.where('studentId').equals(studentId).toArray();
+  // Simplificação temporária: listar os arquivos do diretório no storage
+  const userId = await getUserId();
+  const { data, error } = await supabase.storage
+    .from('contract-files')
+    .list(`${userId}/students/${studentId}`);
+    
+  if (error) return [];
+  return data.map(f => ({
+    id: f.id,
+    fileName: f.name,
+    filePath: `${userId}/students/${studentId}/${f.name}`,
+    created_at: f.created_at
+  }));
 }
 
-export async function deleteStudentDoc(id) {
-  return await db.studentDocs.delete(id);
+export async function deleteStudentDoc(filePath) {
+  const { error } = await supabase.storage
+    .from('contract-files')
+    .remove([filePath]);
+  if (error) throw error;
+  return true;
 }
 
 // ============================================
 // CONTRACT FUNCTIONS
 // ============================================
 
-/**
- * Save a contract template to IndexedDB
- * @param {Object} contract - { name, category, fileData (Blob), placeholders[], textPreview }
- */
 export async function saveContract(contract) {
-  return await db.contracts.add({
-    ...contract,
-    createdAt: new Date().toISOString()
-  });
+  const userId = await getUserId();
+  
+  // Upload file to storage
+  const fileExt = contract.fileData.name ? contract.fileData.name.split('.').pop() : 'docx';
+  const filePath = `${userId}/templates/${Date.now()}_template.${fileExt}`;
+  
+  const { error: uploadError } = await supabase.storage
+    .from('contract-files')
+    .upload(filePath, contract.fileData);
+    
+  if (uploadError) throw uploadError;
+
+  const { data, error } = await supabase
+    .from('contracts')
+    .insert([{
+      user_id: userId,
+      name: contract.name,
+      category: contract.category,
+      placeholders: contract.placeholders || [],
+      file_path: filePath
+    }])
+    .select()
+    .single();
+    
+  if (error) throw error;
+  return data;
 }
 
-/**
- * Get all contracts, optionally filtered by category
- */
 export async function getContracts(category = null) {
+  let query = supabase.from('contracts').select('*').order('created_at', { ascending: false });
   if (category && category !== 'all') {
-    return await db.contracts.where('category').equals(category).reverse().sortBy('createdAt');
+    query = query.eq('category', category);
   }
-  return await db.contracts.reverse().sortBy('createdAt');
+  
+  const { data, error } = await query;
+  if (error) throw error;
+  return data || [];
 }
 
-/**
- * Get a single contract by ID
- */
 export async function getContract(id) {
-  return await db.contracts.get(id);
+  const { data, error } = await supabase
+    .from('contracts')
+    .select('*')
+    .eq('id', id)
+    .single();
+    
+  if (error) throw error;
+  
+  // Download the file data to maintain compatibility with generator
+  if (data && data.file_path) {
+    const { data: fileBlob, error: downloadError } = await supabase.storage
+      .from('contract-files')
+      .download(data.file_path);
+      
+    if (!downloadError && fileBlob) {
+      data.fileData = fileBlob;
+    }
+  }
+  
+  return data;
 }
 
-/**
- * Update a contract
- */
 export async function updateContract(id, updates) {
-  return await db.contracts.update(id, updates);
+  const { data, error } = await supabase
+    .from('contracts')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+    
+  if (error) throw error;
+  return data;
 }
 
-/**
- * Delete a contract
- */
 export async function deleteContract(id) {
-  return await db.contracts.delete(id);
+  const contract = await getContract(id);
+  
+  // Delete from DB
+  const { error } = await supabase.from('contracts').delete().eq('id', id);
+  if (error) throw error;
+  
+  // Delete file from storage
+  if (contract && contract.file_path) {
+    await supabase.storage.from('contract-files').remove([contract.file_path]);
+  }
+  
+  return true;
 }
 
-/**
- * Get all unique categories
- */
 export async function getCategories() {
-  const contracts = await db.contracts.toArray();
+  const contracts = await getContracts();
   const cats = [...new Set(contracts.map(c => c.category).filter(Boolean))];
   return cats.sort();
 }
 
-/**
- * Count contracts per category
- */
 export async function getCategoryCounts() {
-  const contracts = await db.contracts.toArray();
+  const contracts = await getContracts();
   const counts = {};
   contracts.forEach(c => {
     const cat = c.category || 'Sem categoria';
@@ -162,54 +228,108 @@ export async function getCategoryCounts() {
 // GENERATION HISTORY FUNCTIONS
 // ============================================
 
-/**
- * Save a generated document record to history
- * @param {Object} record - { filename, studentName, templateName, docxBlob, pdfBlob, data }
- */
 export async function saveToHistory(record) {
-  return await db.generationHistory.add({
-    ...record,
-    createdAt: new Date().toISOString()
-  });
+  const userId = await getUserId();
+  
+  let docxPath = null;
+  let pdfPath = null;
+  
+  // Upload generated files if they exist
+  if (record.docxBlob) {
+    docxPath = `${userId}/history/${Date.now()}_${record.filename}`;
+    await supabase.storage.from('contract-files').upload(docxPath, record.docxBlob);
+  }
+  if (record.pdfBlob) {
+    pdfPath = `${userId}/history/${Date.now()}_${record.filename.replace('.docx', '.pdf')}`;
+    await supabase.storage.from('contract-files').upload(pdfPath, record.pdfBlob);
+  }
+
+  const { data, error } = await supabase
+    .from('generation_history')
+    .insert([{
+      user_id: userId,
+      filename: record.filename,
+      student_name: record.studentName,
+      template_name: record.templateName,
+      template_id: record.templateId,
+      data: record.data || {},
+      docx_path: docxPath,
+      pdf_path: pdfPath
+    }])
+    .select()
+    .single();
+    
+  if (error) throw error;
+  return data;
 }
 
-/**
- * Get all history records, most recent first.
- * Triggers automatic cleanup of records older than 15 days.
- */
 export async function getGenerationHistory() {
   try {
     await cleanupHistory();
   } catch (e) {
     console.warn('Cleanup failed:', e);
   }
-  return await db.generationHistory.reverse().sortBy('createdAt');
+  
+  const { data, error } = await supabase
+    .from('generation_history')
+    .select('*')
+    .order('created_at', { ascending: false });
+    
+  if (error) throw error;
+  
+  // Map back to expected format
+  return (data || []).map(r => ({
+    ...r,
+    studentName: r.student_name,
+    templateName: r.template_name,
+    templateId: r.template_id
+  }));
 }
 
-/**
- * Delete a specific history record
- */
 export async function deleteFromHistory(id) {
-  return await db.generationHistory.delete(id);
+  const { data, error: fetchError } = await supabase
+    .from('generation_history')
+    .select('*')
+    .eq('id', id)
+    .single();
+    
+  if (!fetchError && data) {
+    const filesToRemove = [];
+    if (data.docx_path) filesToRemove.push(data.docx_path);
+    if (data.pdf_path) filesToRemove.push(data.pdf_path);
+    if (filesToRemove.length > 0) {
+      await supabase.storage.from('contract-files').remove(filesToRemove);
+    }
+  }
+
+  const { error } = await supabase.from('generation_history').delete().eq('id', id);
+  if (error) throw error;
+  return true;
 }
 
-/**
- * Automatically delete records older than 15 days
- */
 async function cleanupHistory() {
   const fifteenDaysAgo = new Date();
   fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
-  const isoDate = fifteenDaysAgo.toISOString();
   
-  const oldRecords = await db.generationHistory
-    .where('createdAt')
-    .below(isoDate)
-    .toArray();
+  const { data, error } = await supabase
+    .from('generation_history')
+    .select('id, docx_path, pdf_path')
+    .lt('created_at', fifteenDaysAgo.toISOString());
     
-  if (oldRecords.length > 0) {
-    const ids = oldRecords.map(r => r.id);
-    await db.generationHistory.bulkDelete(ids);
+  if (error || !data || data.length === 0) return;
+  
+  const ids = data.map(r => r.id);
+  const filesToRemove = [];
+  data.forEach(r => {
+    if (r.docx_path) filesToRemove.push(r.docx_path);
+    if (r.pdf_path) filesToRemove.push(r.pdf_path);
+  });
+  
+  if (filesToRemove.length > 0) {
+    await supabase.storage.from('contract-files').remove(filesToRemove);
+  }
+  
+  if (ids.length > 0) {
+    await supabase.from('generation_history').delete().in('id', ids);
   }
 }
-
-export default db;

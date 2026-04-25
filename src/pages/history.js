@@ -20,7 +20,7 @@ export async function renderHistoryPage(container) {
     </div>
   `;
 
-  bindHistoryEvents(container);
+
 }
 
 function renderEmptyState() {
@@ -37,6 +37,36 @@ function renderEmptyState() {
     </div>
   `;
 }
+
+// Global action handlers for History
+window.historyActions = {
+  downloadDocx: async (id) => {
+    const historyItems = await getGenerationHistory();
+    const item = historyItems.find(h => h.id === id);
+    if (item && item.docxBlob) {
+      downloadFile(item.docxBlob, item.filename);
+      showToast('Download do DOCX iniciado');
+    }
+  },
+  downloadPdf: async (id) => {
+    const historyItems = await getGenerationHistory();
+    const item = historyItems.find(h => h.id === id);
+    if (item && item.pdfBlob) {
+      const pdfName = item.filename.replace('.docx', '.pdf');
+      downloadFile(item.pdfBlob, pdfName);
+      showToast('Download do PDF iniciado');
+    }
+  },
+  deleteItem: async (id) => {
+    if (confirm('Deseja remover este item do histórico?')) {
+      await deleteFromHistory(id);
+      showToast('Item removido do histórico');
+      // Find current container and refresh
+      const container = document.getElementById('page-content');
+      if (container) renderHistoryPage(container);
+    }
+  }
+};
 
 function renderHistoryTable(history) {
   return `
@@ -73,15 +103,15 @@ function renderHistoryTable(history) {
               </td>
               <td class="text-right">
                 <div class="item-actions">
-                  <button class="btn-icon btn-docx" data-id="${item.id}" title="Baixar DOCX">
+                  <button class="btn-icon btn-docx" onclick="window.historyActions.downloadDocx(${item.id})" title="Baixar DOCX">
                     <span class="material-icons-round">description</span>
                   </button>
                   ${item.pdfBlob ? `
-                    <button class="btn-icon btn-pdf" data-id="${item.id}" title="Baixar PDF">
+                    <button class="btn-icon btn-pdf" onclick="window.historyActions.downloadPdf(${item.id})" title="Baixar PDF">
                       <span class="material-icons-round">picture_as_pdf</span>
                     </button>
                   ` : ''}
-                  <button class="btn-icon btn-delete" data-id="${item.id}" title="Excluir">
+                  <button class="btn-icon btn-delete" onclick="window.historyActions.deleteItem(${item.id})" title="Excluir">
                     <span class="material-icons-round">delete</span>
                   </button>
                 </div>
@@ -94,43 +124,3 @@ function renderHistoryTable(history) {
   `;
 }
 
-function bindHistoryEvents(container) {
-  // Download DOCX
-  container.querySelectorAll('.btn-docx').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const id = parseInt(btn.dataset.id);
-      const historyItems = await getGenerationHistory();
-      const item = historyItems.find(h => h.id === id);
-      if (item && item.docxBlob) {
-        downloadFile(item.docxBlob, item.filename);
-        showToast('Download do DOCX iniciado');
-      }
-    });
-  });
-
-  // Download PDF
-  container.querySelectorAll('.btn-pdf').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const id = parseInt(btn.dataset.id);
-      const historyItems = await getGenerationHistory();
-      const item = historyItems.find(h => h.id === id);
-      if (item && item.pdfBlob) {
-        const pdfName = item.filename.replace('.docx', '.pdf');
-        downloadFile(item.pdfBlob, pdfName);
-        showToast('Download do PDF iniciado');
-      }
-    });
-  });
-
-  // Delete
-  container.querySelectorAll('.btn-delete').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      if (confirm('Deseja remover este item do histórico?')) {
-        const id = parseInt(btn.dataset.id);
-        await deleteFromHistory(id);
-        showToast('Item removido do histórico');
-        renderHistoryPage(container);
-      }
-    });
-  });
-}
