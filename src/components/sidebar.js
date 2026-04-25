@@ -9,7 +9,7 @@ const MENU_ITEMS = [
   { id: 'history', icon: 'history', label: 'Histórico', sublabel: 'Downloads recentes' },
 ];
 
-import { getCurrentUser } from '../services/auth.js';
+import { getCurrentUser, lock } from '../services/auth.js';
 
 export async function renderSidebar(container, currentPage, onNavigate) {
   const user = await getCurrentUser();
@@ -121,8 +121,7 @@ export async function renderSidebar(container, currentPage, onNavigate) {
   const lockBtn = container.querySelector('#btn-lock-system');
   if (lockBtn) {
     lockBtn.addEventListener('click', async () => {
-      const auth = await import('../services/auth.js');
-      await auth.lock();
+      await lock();
       window.location.reload();
     });
   }
