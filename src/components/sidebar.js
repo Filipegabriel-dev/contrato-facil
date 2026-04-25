@@ -76,7 +76,10 @@ export async function renderSidebar(container, currentPage, onNavigate) {
               ${avatarUrl ? `<img src="${avatarUrl}" alt="Avatar">` : initials}
             </div>
             <div class="user-text-small">
-              <span class="user-name-small">${fullName}</span>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <span class="user-name-small">${fullName}</span>
+                <span style="background: var(--slate-100); color: var(--slate-600); font-size: 0.625rem; padding: 1px 4px; border-radius: 4px; font-weight: 700; text-transform: uppercase;">Free</span>
+              </div>
               <span class="user-status-small">Minha Conta</span>
             </div>
           </div>
@@ -97,6 +100,14 @@ export async function renderSidebar(container, currentPage, onNavigate) {
   if (profileInfo) {
     profileInfo.addEventListener('click', () => {
       onNavigate('account');
+    });
+  }
+
+  // Bind "Seja Pro" button
+  const proBtn = container.querySelector('.btn-pro-sm');
+  if (proBtn) {
+    proBtn.addEventListener('click', () => {
+      onNavigate('pricing');
     });
   }
 

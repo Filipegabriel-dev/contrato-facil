@@ -32,6 +32,19 @@ export async function renderAccountPage(container) {
 
       <div class="account-card">
         <h3 class="account-card-title">
+          <span class="material-icons-round">workspace_premium</span>
+          Seu Plano: <span style="color: var(--slate-500); font-weight: 400; margin-left: 8px;">Gratuito</span>
+        </h3>
+        <p class="account-card-desc">
+          Você está no plano básico. Faça o upgrade para o <strong>Plano Profissional</strong> para ter gerações ilimitadas e modelos DOCX exclusivos.
+        </p>
+        <button class="btn btn-primary" onclick="navigateTo('pricing')" style="padding: 10px 20px; font-size: 0.875rem;">
+          Ver Planos de Upgrade
+        </button>
+      </div>
+
+      <div class="account-card">
+        <h3 class="account-card-title">
           <span class="material-icons-round">security</span>
           Segurança e Privacidade (LGPD)
         </h3>
